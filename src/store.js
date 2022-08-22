@@ -3,12 +3,17 @@ import { configureStore } from "@reduxjs/toolkit";
 const ADD = "ADD";
 const DELETE = "DELETE";
 
-const reducer = (state = [], action) => {
+const reducer = (state = localStorage.toDos
+                        ? JSON.parse(localStorage.toDos)
+                        : [], action) => {
     switch(action.type) {
         case ADD:
-            return [{text: action.text, id:Date.now()}, ...state];
+            localStorage.setItem("toDos", JSON.stringify([{text: action.text, id:Date.now()}, ...state]));
+            return JSON.parse(localStorage.toDos);  
         case DELETE:
-            return state.filter(toDo => toDo.id !== action.id);
+            const output = JSON.parse(localStorage.toDos);
+            localStorage.setItem("toDos", JSON.stringify(output.filter(toDo => toDo.id !== action.id)));
+            return JSON.parse(localStorage.toDos);
         default:
             return state;
     }
